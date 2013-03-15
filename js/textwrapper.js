@@ -9,38 +9,38 @@ jQuery.fn.textwrapper = function(options){
 
   //Расчет размера шрифта и размера блока(для обработки события `resize`)
   function calculateFontAndSize(outer, max) {
-  	var max = parseInt(max) || options.fontSizeMax
-  	  , inner = outer.find('.'+options.innerClass).css({'font-size':max})
-  	  , o = outer.height();
+    var max = parseInt(max) || options.fontSizeMax
+      , inner = outer.find('.'+options.innerClass).css({'font-size':max})
+      , o = outer.height();
     //Уменьшаем шрифт, пока он полность не вместится в блок
-  	while (inner.height()>=o && (max--)>options.fontSizeMin) {
-  	  inner.css({'font-size':max});
-  	}
+    while (inner.height()>=o && (max--)>options.fontSizeMin) {
+      inner.css({'font-size':max});
+    }
     //Если самый маленький шрифт не подошел, то показываем '...', иначе скрываем его.
-  	inner.next('.'+options.innerClass+'_ellipsis').css({'display':inner.height()-options.fontSizeMin>=o?'block':'none'});
+    inner.next('.'+options.innerClass+'_ellipsis').css({'display':inner.height()-options.fontSizeMin>=o?'block':'none'});
     //Возвращаем размеры внешнего блока
-  	return {'width':outer.width(),'height':o}
+    return {'width':outer.width(),'height':o}
   }
 
   return this.each(function() {
-  	//Базовые стили и обертка
-  	$(this).css({'width':options.width,'height':options.height,'overflow':'hidden','position':'relative'})
-  	  .wrapInner($('<div/>').addClass(options.innerClass).css({'text-align':'justify'}))
-  	  .append($('<div/>').addClass(options.innerClass+'_ellipsis').css({'position':'absolute','right':'10px','bottom':'2px','font-size':options.fontSizeMin+2, 'display':'none', 'background-color':'#FFF', 'white-space':'pre'}).text(' ...'));
-  	var that = this
-  	  , inner = $(that).find('.'+options.innerClass);
+    //Базовые стили и обертка
+    $(this).css({'width':options.width,'height':options.height,'overflow':'hidden','position':'relative'})
+      .wrapInner($('<div/>').addClass(options.innerClass).css({'text-align':'justify'}))
+      .append($('<div/>').addClass(options.innerClass+'_ellipsis').css({'position':'absolute','right':'10px','bottom':'2px','font-size':options.fontSizeMin+2, 'display':'none', 'background-color':'#FFF', 'white-space':'pre'}).text(' ...'));
+    var that = this
+      , inner = $(that).find('.'+options.innerClass);
 
-  	//Стартовый расчет размера 
-  	var currSize = calculateFontAndSize($(this));
-  	//Обработчик на изменение размера окна
-  	$(window).resize(function(){
-  	  if (inner.height()>$(that).height()) {
-  	    //Если текст начал выступать за пределы внешнего блока, то его нужно уменьшить
+    //Стартовый расчет размера 
+    var currSize = calculateFontAndSize($(this));
+    //Обработчик на изменение размера окна
+    $(window).resize(function(){
+      if (inner.height()>$(that).height()) {
+        //Если текст начал выступать за пределы внешнего блока, то его нужно уменьшить
         currSize = calculateFontAndSize($(that), inner.css('font-size'));
-  	  } else if (currSize.width!=$(that).width() || currSize.height!=$(that).height()) {
-  	    //Иначе, если размеры блока вообще менялись, то пробуем увеличить
-  	    currSize = calculateFontAndSize($(that));
-  	  }
-  	});
+      } else if (currSize.width!=$(that).width() || currSize.height!=$(that).height()) {
+        //Иначе, если размеры блока вообще менялись, то пробуем увеличить
+        currSize = calculateFontAndSize($(that));
+      }
+    });
   });
 };
